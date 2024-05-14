@@ -8,6 +8,9 @@
   - 新增候选chunk扩展上下文功能，用`num_expand_context_chunk`参数设置命中的候选chunk扩展上下文窗口大小
   - RAG底模优化，可以使用200k的基于RAG微调的LLM模型，支持自定义RAG模型，用`generate_model_name_or_path`参数设置底模
 - 本项目基于gradio开发了RAG对话页面，支持流式对话
+## 数据来源
+1. medical_corpus.jsonl：https://github.com/shibing624/MedicalGPT/blob/main/data/rag/medical_corpus.txt
+2. sample.pdf：https://arxiv.org/abs/1705.09655
 
 ## 使用说明
 

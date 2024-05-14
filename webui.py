@@ -46,16 +46,18 @@ if __name__ == '__main__':
     )
     logger.info(f"chatpdf model: {model}")
 
-
+    # 聊天机器人的流式预测接口,调用ChatPDF的predict_stream函数生成回答
     def predict_stream(message, history):
         history_format = []
+        # **有点问题，history对于流式来说其实是空的** #
         for human, assistant in history:
             history_format.append([human, assistant])
         model.history = history_format
+        # **有点问题** #
         for chunk in model.predict_stream(message):
             yield chunk
 
-
+    # 聊天机器人的非流式预测接口,调用ChatPDF的predict函数生成回答
     def predict(message, history):
         logger.debug(message)
         response, reference_results = model.predict(message)
@@ -63,17 +65,19 @@ if __name__ == '__main__':
         logger.debug(r)
         return r
 
-
+    # Gradio的Chatbot组件,用于显示聊天记录
     chatbot_stream = gr.Chatbot(
         height=600,
         avatar_images=(
             os.path.join(pwd_path, "assets/user.png"),
             os.path.join(pwd_path, "assets/llama.png"),
         ), bubble_full_width=False)
+
     title = " 🎉ChatPDF WebUI🎉 "
-    description = "Link in Github: [shibing624/ChatPDF](https://github.com/shibing624/ChatPDF)"
+    description = "Link in Github: [ShuaiLv-JNU/gzis-rag](https://github.com/ShuaiLv-JNU/gzis-rag)"
     css = """.toast-wrap { display: none !important } """
     examples = ['Can you tell me about the NLP?', '介绍下NLP']
+    # Gradio的ChatInterface组件,它将前面定义的各种元素组合成一个完整的聊天界面
     chat_interface_stream = gr.ChatInterface(
         predict_stream,
         textbox=gr.Textbox(lines=4, placeholder="Ask me question", scale=7),
@@ -84,7 +88,7 @@ if __name__ == '__main__':
         examples=examples,
         theme='soft',
     )
-
+    # Gradio的Blocks布局中,并调用launch()方法来启动Web服务
     with gr.Blocks() as demo:
         chat_interface_stream.render()
     demo.queue().launch(

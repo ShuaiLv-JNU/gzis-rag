@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 """
 batch_rag_demo.py
+批量问答生成和评估的示例脚本
+1.加载给定的语料库文件,构建 ChatPDF 模型。
+2.读取测试查询文件或使用默认查询。
+3.对每个查询,使用 ChatPDF 模型生成回答,并将生成的回答与真实答案进行比较。
+4.将生成的回答、参考结果和真实答案保存到输出的 JSONL 文件中。
+5.评估生成速度和效率。
 """
 import argparse
 import json
@@ -15,10 +21,11 @@ from chatpdf import ChatPDF
 pwd_path = os.path.abspath(os.path.dirname(__file__))
 
 
+# 从JSONL文件中解析出问答对,构建ground truth字典
 def get_truth_dict(jsonl_file_path):
     truth_dict = dict()
-
     with open(jsonl_file_path, 'r', encoding='utf-8') as file:
+        # 从中解析出问题和答案,构建一个问题到答案的字典映射
         for line in file:
             entry = json.loads(line)
             input_text = entry.get("question", "")
@@ -64,9 +71,10 @@ if __name__ == '__main__':
         num_expand_context_chunk=args.num_expand_context_chunk,
     )
     print(f"chatpdf model: {model}")
-
+    # 调用 get_truth_dict 函数获取问题到答案的字典映射,并将结果合并到 truth_dict 中
     truth_dict = dict()
     for i in args.corpus_files.split(','):
+        # 遍历每个jsonl
         if i.endswith('.jsonl'):
             tmp_truth_dict = get_truth_dict(i)
             truth_dict.update(tmp_truth_dict)
@@ -83,11 +91,13 @@ if __name__ == '__main__':
     if args.test_size > 0:
         examples = examples[:args.test_size]
     print("Start inference.")
+    # 批量生成和评估
     t1 = time.time()
     counts = 0
     if os.path.exists(args.output_file):
         os.remove(args.output_file)
     eval_batch_size = args.eval_batch_size
+    # 将query划分批次，每个批次包含 eval_batch_size 个查询，tqdm的第一个参数是可迭代对象
     for batch in tqdm(
             [
                 examples[i: i + eval_batch_size]
@@ -96,6 +106,7 @@ if __name__ == '__main__':
             desc="Generating outputs",
     ):
         results = []
+        # 遍历查询,使用 ChatPDF 模型生成回答,并将输入、生成的回答、参考结果和真实答案打印出来
         for example in batch:
             response, reference_results = model.predict(example)
             truth = truth_dict.get(example, '')
