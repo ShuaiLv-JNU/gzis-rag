@@ -11,7 +11,6 @@
 ## 数据来源
 1. medical_corpus.jsonl：https://github.com/shibing624/MedicalGPT/blob/main/data/rag/medical_corpus.txt
 2. sample.pdf：https://arxiv.org/abs/1705.09655
-
 ## 使用说明
 
 #### 安装依赖

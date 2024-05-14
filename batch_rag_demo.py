@@ -106,7 +106,7 @@ if __name__ == '__main__':
             desc="Generating outputs",
     ):
         results = []
-        # 遍历查询,使用 ChatPDF 模型生成回答,并将输入、生成的回答、参考结果和真实答案打印出来
+        # 遍历查询,使用 ChatPDF模型生成回答,并将输入、生成的回答、参考结果和真实答案打印出来
         for example in batch:
             response, reference_results = model.predict(example)
             truth = truth_dict.get(example, '')

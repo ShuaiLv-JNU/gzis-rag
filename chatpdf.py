@@ -658,5 +658,5 @@ if __name__ == "__main__":
         num_expand_context_chunk=args.num_expand_context_chunk,
         rerank_model_name_or_path=args.rerank_model_name,
     )
-    r, refs = m.predict('自然语言中的非平行迁移是指什么？')
+    r, refs = m.predict('自然语言中的非平行迁移是指什么呢？')
     print(r, refs)

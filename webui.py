@@ -88,7 +88,7 @@ if __name__ == '__main__':
         examples=examples,
         theme='soft',
     )
-    # Gradio的Blocks布局中,并调用launch()方法来启动Web服务
+    # Gradio的Blocks布局中,调用launch()方法来启动Web服务
     with gr.Blocks() as demo:
         chat_interface_stream.render()
     demo.queue().launch(
